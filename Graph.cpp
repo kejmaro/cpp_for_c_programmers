@@ -5,7 +5,7 @@
 #include <list>
 #include <algorithm>
 #include <queue>
-#include "Graph_lists.h"
+#include "Graph.h"
 using namespace std;
 
 Graph::Graph(int size, float density, int range) {
