@@ -1,0 +1,4 @@
+# exclude all the compiled files
+*.out
+# exclude temporary files of vim
+*.swp
