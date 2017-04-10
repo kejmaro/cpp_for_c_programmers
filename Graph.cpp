@@ -1,105 +1,147 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include "Graph.h"
+#include <vector>
+#include <list>
+#include <algorithm>
+#include <queue>
+#include "Graph_lists.h"
 using namespace std;
 
-Graph::Graph(int size, float density) : size(size) {
+Graph::Graph(int size, float density, int range) {
     // seed RNG
-    srand(time(0));
+    // srand(time(0));
+    srand(0);
 
-    // create 2D array of booleans on heap
-    graph = new bool*[size];
-    for(int i = 0; i < size; ++i)
-    {
-        this->graph[i] = new bool[size];
+    // initialize vector of Nodes
+    nodes = vector<Node>();
+    for(int i = 0; i < size; i++) {
+        nodes.push_back(Node(i));
     }
 
-    // initialize vertices
-    for(int i = 0; i < size; ++i) {
+    generate_edges(density, range);
+}
 
-        // graph is simmetric, thus j = i
-        for(int j = i; j < size; ++j) {
-            if (i == j) {
-                // no loops
-                graph[i][j] = false;
-            } else {
-                graph[i][j] = graph[j][i] = (prob() < density);
+void Graph::generate_edges(float density, int range) {
+    for(vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
+        Node& node = *it;
+        for(unsigned int i = 0; i < nodes.size(); i++) {
+            if (!(node.is_connected(nodes[i]))) {
+                if (prob() < density) {
+                    add_edge(node, nodes[i], range);
+                }
             }
         }
     }
 }
 
 float Graph::prob() {
-    return (float)(rand() % 100 + 1) / 100;
+    return (float)(rand() % 100 + 1) / 100; 
 }
 
-Graph::~Graph() {
-    // delete graph's rows...
-    for(int i = 0; i < size ; ++i) {
-        delete []graph[i];
-    }
+void Graph::add_edge(Node& node_a, Node& node_b, int range) {
+    int cost = generate_cost(range);
+    node_a.add_edge(node_b, cost);
+    node_b.add_edge(node_a, cost);
+}
 
-    // ... and finally the graph
-    delete []graph;
+int Graph::generate_cost(int range) { 
+    return rand() % range + 1; 
+}
+
+bool Graph::adjacent(int node1_id, int node2_id) {
+    return nodes[node1_id].is_connected(nodes[node2_id]);
+}
+
+void Graph::neighbours(int node_id) {
+    cout << nodes[node_id];
+}
+
+void Graph::Dijkstra_shortest_path() {
+    // vector<Node> open_set = vector<Node>();
+    priority_queue<Node, vector<Node>, compare_nodes> open_set;
+    vector<Node> close_set = vector<Node>();
+    
+    nodes[0].set_value(3);
+    nodes[1].set_value(1);
+    nodes[2].set_value(5);
+    open_set.push(nodes[0]);
+    open_set.push(nodes[1]);
+    open_set.push(nodes[2]);
+    // sort(open_set.begin(), open_set.end());
+    // for(vector<Node>::const_iterator it = open_set.begin(); it != open_set.end(); ++it) {
+    //     cout << (*it).get_value() << " ";
+    // }
+    // cout << endl;
+    cout << " -- open_set print out --" << endl;
+    while (!open_set.empty()) {
+        cout << open_set.top();
+        open_set.pop();
+    }
 }
 
 ostream& operator<< (ostream& out, const Graph& graph) {
-    for(int i = 0; i < graph.size; ++i) {
-        for(int j = 0; j < graph.size ; ++j) {
-            out << graph.graph[i][j] << " ";
-        }
-        out << endl;
+    for(unsigned int i = 0; i < graph.nodes.size(); i++) {
+        out << graph.nodes[i];
     }
-
     return out;
 }
 
-bool Graph::is_connected() {
-    int old_size = 0, c_size = 0;
-    // init data structures
-    bool* close = new bool[size];
-    bool* open = new bool[size];
-    for(int i = 0; i < size; ++i) {
-        open[i] = close[i] = false;
-    }
+Node::Node(int id) : id(id), value(0) {
+    edges = std::vector<Edge>();
+}
 
-    // place first node in the open set so that it is automatically moved to
-    // the closed set at the beginning of algorithm's execution
-    open[0] = true;
-
-    while ( c_size < size ) {
-        for(int i = 0; i < size; ++i) {
-            // needed for exit condition
-            old_size = c_size;
-            
-            // move node i from the open set (if it's already there) to the closed one
-            if (open[i] && (close[i] == false)) {
-                close[i] = true;
-                c_size++;
-
-                // populate open set with nodes reachable from node i
-                for(int j = 0; j < size; ++j) {
-                    open[j] = open[j] || graph[i][j];
-                }
-            }
-        }
-
-        // check exit conditions
-        if ( c_size == size ) {
-            return true;
-        }
-
-        if ( old_size == c_size ) {
-            return false;
-        }
+bool Node::is_connected(Node& other) {
+    // no loops
+    if (this == &other) {
+        return true;
     }
     
+    // go through each edge of the node
+    for(vector<Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
+        if ((*it).get_dst() == other.id) {
+            return true;
+        }
+    }
+
     return false;
 }
 
-int main() {
-    Graph graph(10, 0.3);
+void Node::add_edge(Node& dst, int cost) {
+    edges.push_back(Edge(dst.id, cost));
+}
+
+void Node::set_value(int value) {
+    this->value = value;
+}
+
+int Node::get_value() const {
+    return value;
+}
+
+ostream& operator<< (ostream& out, const Node& node) {
+    out << "node " << node.id << ":";
+    for(vector<Edge>::const_iterator it = node.edges.begin(); it != node.edges.end(); ++it) {
+        out << *it;
+    }
+    out << endl;
+    return out;
+}
+
+bool Node::operator< (const Node& node) const {
+    return (value < node.get_value());
+}
+ 
+ostream& operator<< (ostream& out, const Edge& edge) {
+    out << " -> " << edge.dst << "(" << edge.value << ")";
+    return out;
+}
+
+int main(int argc, char* argv[]) {
+    Graph graph = argc > 1 ? Graph(atoi(argv[1]), atof(argv[2])) : Graph();
     cout << graph;
-    cout << "graph is " << (graph.is_connected() ? "" : "NOT ") << "connected" << endl;
+    cout << "graph.adjacent(0,3): " << graph.adjacent(0,3) << endl;
+    cout << "graph.adjacent(0,1): " << graph.adjacent(0,1) << endl;
+    graph.neighbours(0);
+    graph.Dijkstra_shortest_path();
 }
