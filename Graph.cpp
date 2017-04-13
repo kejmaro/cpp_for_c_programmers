@@ -2,9 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-#include <list>
 #include <algorithm>
-#include <queue>
 #include "Graph.h"
 using namespace std;
 
@@ -58,26 +56,17 @@ void Graph::neighbours(int node_id) {
 }
 
 void Graph::Dijkstra_shortest_path() {
-    // vector<Node> open_set = vector<Node>();
-    priority_queue<Node, vector<Node>, compare_nodes> open_set;
-    vector<Node> close_set = vector<Node>();
-    
     nodes[0].set_value(3);
     nodes[1].set_value(1);
     nodes[2].set_value(5);
+    PriorityQueue open_set;
     open_set.push(nodes[0]);
     open_set.push(nodes[1]);
     open_set.push(nodes[2]);
-    // sort(open_set.begin(), open_set.end());
-    // for(vector<Node>::const_iterator it = open_set.begin(); it != open_set.end(); ++it) {
-    //     cout << (*it).get_value() << " ";
-    // }
-    // cout << endl;
     cout << " -- open_set print out --" << endl;
-    while (!open_set.empty()) {
-        cout << open_set.top();
-        open_set.pop();
-    }
+    cout << open_set;
+    cout << "open_set.contains(nodes[0]): " << open_set.contains(nodes[0]) << endl;
+    cout << "open_set.contains(nodes[4]): " << open_set.contains(nodes[4]) << endl;
 }
 
 ostream& operator<< (ostream& out, const Graph& graph) {
@@ -131,9 +120,37 @@ ostream& operator<< (ostream& out, const Node& node) {
 bool Node::operator< (const Node& node) const {
     return (value < node.get_value());
 }
+
+bool Node::operator== (const Node& node) const {
+    return id == node.id;
+}
  
 ostream& operator<< (ostream& out, const Edge& edge) {
     out << " -> " << edge.dst << "(" << edge.value << ")";
+    return out;
+}
+
+PriorityQueue::PriorityQueue() {
+    nodes = vector<Node>();
+}
+
+bool PriorityQueue::contains(Node& node) {
+    return find(nodes.begin(), nodes.end(), node) != nodes.end();
+}
+
+void PriorityQueue::push(Node& node) {
+    nodes.push_back(node);
+    sort_container();
+}
+
+void PriorityQueue::sort_container() {
+    sort(nodes.begin(), nodes.end());
+}
+
+ostream& operator<< (ostream& out, const PriorityQueue& pq) {
+    for(vector<Node>::const_iterator it = pq.nodes.begin(); it != pq.nodes.end(); ++it) {
+        out << *it;
+    }
     return out;
 }
 

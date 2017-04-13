@@ -26,14 +26,7 @@ public:
     void set_value(int value);
     int get_value() const;
     bool operator< (const Node& node) const;
-};
-
-class compare_nodes {
-public:
-    bool operator() (const Node& node1, const Node& node2) {
-        // negation is used to have the shortest Node at the top of PQ
-        return !(node1 < node2);
-    }
+    bool operator== (const Node& node) const;
 };
 
 class Graph {
@@ -53,3 +46,12 @@ public:
     void Dijkstra_shortest_path();
 };
 
+class PriorityQueue {
+    std::vector<Node> nodes;
+    void sort_container();
+    friend std::ostream& operator<< (std::ostream& out, const PriorityQueue& pq); 
+public:
+    PriorityQueue();
+    bool contains(Node& node);
+    void push(Node& node);
+};
