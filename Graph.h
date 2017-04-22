@@ -1,33 +1,4 @@
-class Edge {
-    int dst;
-    int value;
-
-    friend std::ostream& operator<< (std::ostream& out, const Edge& edge);
-
-public:
-    Edge(int dst_id, int cost) : dst(dst_id), value(cost) {
-    }
-
-    int get_dst() const {
-        return dst;
-    }
-};
-
-class Node {
-    int id, value;
-    std::vector<Edge> edges;
-
-    friend std::ostream& operator<< (std::ostream& out, const Node& node);
-
-public:
-    Node(int id);
-    bool is_connected(Node& other);
-    void add_edge(Node& dst, int cost);
-    void set_value(int value);
-    int get_value() const;
-    bool operator< (const Node& node) const;
-    bool operator== (const Node& node) const;
-};
+// #include "Node.h"
 
 class Graph {
     std::vector<Node> nodes;
@@ -44,14 +15,4 @@ public:
     bool adjacent(int node1_id, int node2_id);
     void neighbours(int node_id);
     void Dijkstra_shortest_path();
-};
-
-class PriorityQueue {
-    std::vector<Node> nodes;
-    void sort_container();
-    friend std::ostream& operator<< (std::ostream& out, const PriorityQueue& pq); 
-public:
-    PriorityQueue();
-    bool contains(Node& node);
-    void push(Node& node);
 };

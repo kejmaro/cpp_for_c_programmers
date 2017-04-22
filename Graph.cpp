@@ -2,7 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-#include <algorithm>
+#include "Node.h"
+#include "PriorityQueue.h"
 #include "Graph.h"
 using namespace std;
 
@@ -67,89 +68,12 @@ void Graph::Dijkstra_shortest_path() {
     cout << open_set;
     cout << "open_set.contains(nodes[0]): " << open_set.contains(nodes[0]) << endl;
     cout << "open_set.contains(nodes[4]): " << open_set.contains(nodes[4]) << endl;
+    cout << "open_set.get_top(): " << open_set.get_top();
 }
 
 ostream& operator<< (ostream& out, const Graph& graph) {
     for(unsigned int i = 0; i < graph.nodes.size(); i++) {
         out << graph.nodes[i];
-    }
-    return out;
-}
-
-Node::Node(int id) : id(id), value(0) {
-    edges = std::vector<Edge>();
-}
-
-bool Node::is_connected(Node& other) {
-    // no loops
-    if (this == &other) {
-        return true;
-    }
-    
-    // go through each edge of the node
-    for(vector<Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
-        if ((*it).get_dst() == other.id) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void Node::add_edge(Node& dst, int cost) {
-    edges.push_back(Edge(dst.id, cost));
-}
-
-void Node::set_value(int value) {
-    this->value = value;
-}
-
-int Node::get_value() const {
-    return value;
-}
-
-ostream& operator<< (ostream& out, const Node& node) {
-    out << "node " << node.id << ":";
-    for(vector<Edge>::const_iterator it = node.edges.begin(); it != node.edges.end(); ++it) {
-        out << *it;
-    }
-    out << endl;
-    return out;
-}
-
-bool Node::operator< (const Node& node) const {
-    return (value < node.get_value());
-}
-
-bool Node::operator== (const Node& node) const {
-    return id == node.id;
-}
- 
-ostream& operator<< (ostream& out, const Edge& edge) {
-    out << " -> " << edge.dst << "(" << edge.value << ")";
-    return out;
-}
-
-PriorityQueue::PriorityQueue() {
-    nodes = vector<Node>();
-}
-
-bool PriorityQueue::contains(Node& node) {
-    return find(nodes.begin(), nodes.end(), node) != nodes.end();
-}
-
-void PriorityQueue::push(Node& node) {
-    nodes.push_back(node);
-    sort_container();
-}
-
-void PriorityQueue::sort_container() {
-    sort(nodes.begin(), nodes.end());
-}
-
-ostream& operator<< (ostream& out, const PriorityQueue& pq) {
-    for(vector<Node>::const_iterator it = pq.nodes.begin(); it != pq.nodes.end(); ++it) {
-        out << *it;
     }
     return out;
 }
