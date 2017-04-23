@@ -29,8 +29,7 @@ void Graph::generate_edges(float density, int range) {
                 if (prob() < density) {
                     add_edge(node, nodes[i], range);
                 }
-            }
-        }
+            } }
     }
 }
 
@@ -52,23 +51,29 @@ bool Graph::adjacent(int node1_id, int node2_id) {
     return nodes[node1_id].is_connected(nodes[node2_id]);
 }
 
-void Graph::neighbours(int node_id) {
-    cout << nodes[node_id];
+vector<Node> Graph::neighbours(int node_id) {
+    vector<Edge>& edges = nodes[node_id].get_edges();
+    vector<Node> neighbours;
+    for(vector<Edge>::iterator it = edges.begin(); it != edges.end(); ++it) {
+        Edge& edge = *it;
+        Node neighbour = nodes[edge.dst];
+        neighbour.set_value(edge.value);
+        neighbours.push_back(neighbour);
+    }
+
+    cout << "printing neighbours: " << endl;
+    Node::print_nodes(neighbours);
+
+    return neighbours;
 }
 
 void Graph::Dijkstra_shortest_path() {
-    nodes[0].set_value(3);
-    nodes[1].set_value(1);
-    nodes[2].set_value(5);
-    PriorityQueue open_set;
-    open_set.push(nodes[0]);
-    open_set.push(nodes[1]);
-    open_set.push(nodes[2]);
-    cout << " -- open_set print out --" << endl;
-    cout << open_set;
-    cout << "open_set.contains(nodes[0]): " << open_set.contains(nodes[0]) << endl;
-    cout << "open_set.contains(nodes[4]): " << open_set.contains(nodes[4]) << endl;
-    cout << "open_set.get_top(): " << open_set.get_top();
+    vector<Node> test = neighbours(0);
+    PriorityQueue open_set = PriorityQueue(test);
+    int top_id = open_set.get_top_id();
+    cout << "top_id: " << top_id << endl;
+    // PriorityQueue close_set;
+    // close_set.push(nodes[top_id]);
 }
 
 ostream& operator<< (ostream& out, const Graph& graph) {
@@ -83,6 +88,5 @@ int main(int argc, char* argv[]) {
     cout << graph;
     cout << "graph.adjacent(0,3): " << graph.adjacent(0,3) << endl;
     cout << "graph.adjacent(0,1): " << graph.adjacent(0,1) << endl;
-    graph.neighbours(0);
     graph.Dijkstra_shortest_path();
 }

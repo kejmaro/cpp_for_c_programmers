@@ -1,5 +1,3 @@
-// #include "Node.h"
-
 class Graph {
     std::vector<Node> nodes;
 
@@ -13,6 +11,6 @@ class Graph {
 public:
     Graph(int size = 5, float density = 0.3, int range = 10);
     bool adjacent(int node1_id, int node2_id);
-    void neighbours(int node_id);
+    std::vector<Node> neighbours(int node_id);
     void Dijkstra_shortest_path();
 };

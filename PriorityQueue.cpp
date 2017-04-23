@@ -5,8 +5,8 @@
 #include "PriorityQueue.h"
 using namespace std;
 
-PriorityQueue::PriorityQueue() {
-    nodes = vector<Node>();
+PriorityQueue::PriorityQueue(vector<Node>& nodes) : nodes(nodes){
+    sort_container();
 }
 
 bool PriorityQueue::contains(Node& node) {
@@ -22,8 +22,11 @@ void PriorityQueue::sort_container() {
     sort(nodes.begin(), nodes.end());
 }
 
-Node& PriorityQueue::get_top() {
-    return *(nodes.begin());
+int PriorityQueue::get_top_id() {
+    Node& best = nodes.back();
+    int top_id = best.get_id();
+    nodes.pop_back();
+    return top_id;
 }
 
 ostream& operator<< (ostream& out, const PriorityQueue& pq) {
