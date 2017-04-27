@@ -1,5 +1,3 @@
-#include <iostream>
-#include <vector>
 #include "Node.h"
 using namespace std;
 
@@ -16,10 +14,6 @@ Node::Node(const Node& other) : id(other.id), value(other.value) {
     edges = other.edges;
     cout << "other.edges: " << &(other.edges) << " | edges: " << &edges << endl;
 }
-
-Edge::~Edge() {
-    cout << "*** ~Edge() dst: " << dst << " " << this << " ***" << endl;
-}
 */
 bool Node::is_connected(Node& other) {
     // no loops
@@ -30,7 +24,7 @@ bool Node::is_connected(Node& other) {
     // go through each edge of the node
     for(vector<Edge>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
         // FIXME implement Node::equals
-        if ((*it).dst == other.id) {
+        if ((*it).dst == &other) {
             return true;
         }
     }
@@ -39,7 +33,7 @@ bool Node::is_connected(Node& other) {
 }
 
 void Node::add_edge(Node& dst, int cost) {
-    edges.push_back(Edge(dst.id, cost));
+    edges.push_back(Edge(&dst, cost));
 }
 
 void Node::set_value(int value) {
@@ -66,14 +60,10 @@ void Node::print_nodes(const vector<Node>& nodes) {
 }
 
 bool Node::operator< (const Node& node) const {
+    // FIXME add comment (having best available by back())
     return (value > node.get_value());
 }
 
 bool Node::operator== (const Node& node) const {
     return id == node.id;
-}
-
-ostream& operator<< (ostream& out, const Edge& edge) {
-    out << " -> " << edge.dst << "(" << edge.value << ")";
-    return out;
 }

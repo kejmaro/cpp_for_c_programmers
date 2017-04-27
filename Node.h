@@ -1,13 +1,9 @@
-class Edge {
+#ifndef NODE_H
+#define NODE_H
 
-    friend std::ostream& operator<< (std::ostream& out, const Edge& edge);
-
-public:
-    int dst, value;
-
-    Edge(int dst_id, int cost) : dst(dst_id), value(cost) {
-    }
-};
+#include <vector>
+#include <iostream>
+#include "Edge.h"
 
 class Node {
     int id, value;
@@ -31,3 +27,4 @@ public:
     }
     static void print_nodes(const std::vector<Node>& nodes);
 };
+#endif // NODE_H

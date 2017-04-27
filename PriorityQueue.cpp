@@ -1,8 +1,9 @@
-#include <iostream>
 #include <vector>
-#include <algorithm>
+#include <iostream>
+#include "Edge.h"
 #include "Node.h"
 #include "PriorityQueue.h"
+#include <algorithm>
 using namespace std;
 
 PriorityQueue::PriorityQueue(vector<Node>& nodes) : nodes(nodes){

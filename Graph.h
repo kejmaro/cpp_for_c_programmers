@@ -1,3 +1,11 @@
+#ifndef GRAPH_H
+#define GRAPH_H
+
+#include <vector>
+#include <iostream>
+#include "Node.h"
+#include "PriorityQueue.h"
+
 class Graph {
     std::vector<Node> nodes;
 
@@ -14,3 +22,4 @@ public:
     std::vector<Node> neighbours(int node_id);
     void Dijkstra_shortest_path();
 };
+#endif // GRAPH_H

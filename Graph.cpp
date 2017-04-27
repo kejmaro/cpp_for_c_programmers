@@ -1,10 +1,6 @@
-#include <iostream>
+#include "Graph.h"
 #include <cstdlib>
 #include <ctime>
-#include <vector>
-#include "Node.h"
-#include "PriorityQueue.h"
-#include "Graph.h"
 using namespace std;
 
 Graph::Graph(int size, float density, int range) {
@@ -29,7 +25,8 @@ void Graph::generate_edges(float density, int range) {
                 if (prob() < density) {
                     add_edge(node, nodes[i], range);
                 }
-            } }
+            }
+        }
     }
 }
 
@@ -56,7 +53,7 @@ vector<Node> Graph::neighbours(int node_id) {
     vector<Node> neighbours;
     for(vector<Edge>::iterator it = edges.begin(); it != edges.end(); ++it) {
         Edge& edge = *it;
-        Node neighbour = nodes[edge.dst];
+        Node neighbour = *(edge.dst);
         neighbour.set_value(edge.value);
         neighbours.push_back(neighbour);
     }

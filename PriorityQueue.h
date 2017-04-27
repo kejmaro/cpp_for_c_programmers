@@ -1,3 +1,10 @@
+#ifndef PRIORITYQUEUE_H
+#define PRIORITYQUEUE_H
+
+#include <vector>
+#include <iostream>
+#include "Node.h"
+
 class PriorityQueue {
     std::vector<Node>& nodes;
     void sort_container();
@@ -9,3 +16,4 @@ public:
     void push(Node& node);
     int get_top_id();
 };
+#endif // PRIORITYQUEUE_H
